@@ -8,7 +8,7 @@ A sample app that helps you stay organized and get things done day-to-day.
 
 ## Demo
 
-See a live demo here.
+See a live demo [here](minimal-todo-nextjs.vercel.app).
 
 ## How to use
 
