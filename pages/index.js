@@ -95,7 +95,7 @@ export default function Home() {
           />
         </div>
 
-        {items?.length !== 0 && (
+        {items !== null && items?.length !== 0 && (
           <button
             className="bg-purple-200 px-2 py-1 text-md mt-1"
             onClick={() => handleDeleteAll()}
