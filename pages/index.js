@@ -14,19 +14,23 @@ export default function Home() {
 
   const handleAdd = () => {
     if (todoItem) {
-      const _items = [
+      setItems([
         {
           id: uuidv4(),
           message: todoItem,
           done: false,
         },
         ...items,
-      ];
-
-      setItems(_items);
-
+      ]);
       setTodoItem("");
-      saveTodoItemsToLocalStorage(_items);
+      saveTodoItemsToLocalStorage([
+        {
+          id: uuidv4(),
+          message: todoItem,
+          done: false,
+        },
+        ...items,
+      ]);
     }
   };
 
@@ -65,7 +69,11 @@ export default function Home() {
 
   const getTodoItemsToLocalStorage = (data) => {
     var _items = localStorage.getItem("items");
-    setItems(JSON.parse(_items));
+    if (_items == null) {
+      setItems([]);
+    } else {
+      setItems(JSON.parse(_items));
+    }
   };
 
   useEffect(() => {
