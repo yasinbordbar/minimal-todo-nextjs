@@ -87,7 +87,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="w-1/2 mx-auto">
+      <div className="w-1/2 sm:w-4/5 mx-auto">
         <div className="pt-12">
           <p className="text-3xl">Todo List</p>
         </div>
@@ -138,7 +138,7 @@ export default function Home() {
                     {message}
                   </p>
                   <button
-                    className="bg-red-300  text-md w-1/12 border border-gray-200 "
+                    className="bg-red-300  text-md w-1/12 sm:w-1/5 border border-gray-200 "
                     onClick={() => handleDelete(id)}
                   >
                     Delete
