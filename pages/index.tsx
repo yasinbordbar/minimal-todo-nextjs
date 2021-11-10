@@ -67,7 +67,7 @@ export default function Home() {
   const saveTodoItemsToLocalStorage = (data) =>
     localStorage.setItem("items", JSON.stringify(data));
 
-  const getTodoItemsToLocalStorage = (data) => {
+  const getTodoItemsToLocalStorage = () => {
     var _items = localStorage.getItem("items");
     if (_items == null) {
       setItems([]);
