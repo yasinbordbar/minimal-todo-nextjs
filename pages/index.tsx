@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 export default function Home() {
   const [todoItem, setTodoItem] = useState("");
@@ -57,7 +58,7 @@ export default function Home() {
     saveTodoItemsToLocalStorage(_items);
   };
 
-  const handleDeleteAll = (id) => {
+  const handleDeleteAll = () => {
     const _items = [];
 
     setItems(_items);
@@ -74,6 +75,16 @@ export default function Home() {
     } else {
       setItems(JSON.parse(_items));
     }
+  };
+
+  const handleDragAndDrop = (result) => {
+    if (!result.destination) return; //exit the function if null.
+
+    const _items = [...items];
+    const [reorderedItem] = _items.splice(result.source.index, 1);
+    _items.splice(result.destination.index, 0, reorderedItem);
+    setItems(_items);
+    saveTodoItemsToLocalStorage(_items);
   };
 
   useEffect(() => {
@@ -112,40 +123,62 @@ export default function Home() {
           </button>
         )}
         <ul className="pt-12">
-          {items
-            ?.filter(({ done }) => !done)
-            .map(({ id, message }) => (
-              <p
-                key={id}
-                className="py-3 border border-gray-200 pl-3 text-lg "
-                onClick={() => handleDone(id)}
-              >
-                {message}
-              </p>
-            ))}
-
-          {items
-            ?.filter(({ done }) => done)
-            .map(({ id, message }) => (
-              <>
-                {" "}
-                <div className="flex flex-row">
-                  <p
-                    key={id}
-                    className="line-through py-3 border border-gray-200 pl-3 text-lg text-green-500 w-11/12"
-                    onClick={() => handleDone(id)}
-                  >
-                    {message}
-                  </p>
-                  <button
-                    className="bg-red-300  text-md w-1/12 sm:w-1/5 border border-gray-200 "
-                    onClick={() => handleDelete(id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            ))}
+          <DragDropContext onDragEnd={handleDragAndDrop}>
+            <Droppable droppableId="to-dos">
+              {(provided) => (
+                <ul {...provided.droppableProps} ref={provided.innerRef}>
+                  {items
+                    // ?.filter(({ done }) => !done)
+                    .map((item, index) => (
+                      <Draggable
+                        key={item.id}
+                        draggableId={item.id.toString()}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <li
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            key={item.id}
+                            className={
+                              snapshot.isDragging ? "selected" : "not-selected"
+                            }
+                          >
+                            {!item.done ? (
+                              <p
+                                key={item.id}
+                                className="py-3 border border-gray-200 pl-3 text-lg "
+                                onClick={() => handleDone(item.id)}
+                              >
+                                {item.message}
+                              </p>
+                            ) : (
+                              <div className="flex flex-row">
+                                <p
+                                  key={item.id}
+                                  className="line-through py-3 border border-gray-200 pl-3 text-lg text-green-500 w-11/12"
+                                  onClick={() => handleDone(item.id)}
+                                >
+                                  {item.message}
+                                </p>
+                                <button
+                                  className="bg-red-300  text-md w-1/12 sm:w-1/5 border border-gray-200 "
+                                  onClick={() => handleDelete(item.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </li>
+                        )}
+                      </Draggable>
+                    ))}
+                  {provided.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </DragDropContext>
         </ul>
       </div>
 
